@@ -18,12 +18,23 @@ from docopt import docopt
 from urlparse import urljoin
 
 
+RESPONSE_CACHE = {}
+
+
 def check_str(url, search_str):
-    response = requests.get(url)
+    if url in RESPONSE_CACHE:
+        response = RESPONSE_CACHE[url]
+    else:
+        response = requests.get(url)
+        RESPONSE_CACHE[url] = response
+
+        if response.status_code != 200:
+            print '[{}] {}\nUse `--static-path` to specify a path to static files'.format(response.status_code, url)
+
+        print '[{}] {}'.format(response.status_code, url)
 
     if response.status_code == 200:
         return search_str in response.content
-    print '[{}] {}'.format(response.status_code, url)
 
 
 def check_14(base_url, static_path='/static/'):
@@ -51,11 +62,21 @@ def check_18(base_url, static_path='/static/'):
     return check_str(url, 'input, textarea, select, .form-row p, form .button {')
 
 
+def check_19(base_url, static_path='/static/'):
+    # okay, so it's looking likely that this change will be in django-flat-theme :(
+    # url = urljoin(base_url, '{}admin/css/base.css'.format(static_path))
+    # return check_str(url, '../img/svg/selector-icons.svg')
+    url = urljoin(base_url, '{}admin/js/vendor/jquery/jquery.min.js'.format(static_path))
+    response = requests.head(url)
+    return response.status_code == 200
+
+
 def check_version(base_url, static_path):
     if not base_url.startswith('http'):
         base_url = 'http://{}'.format(base_url)
 
     check_functions = [
+        ('1.9.x', check_19),
         ('1.8.x', check_18),
         ('1.7.x', check_17),
         ('1.6.x', check_16),
