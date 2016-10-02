@@ -11,6 +11,8 @@ It's probably not a great idea. Just a proof of concept.
 
     pip install git+https://github.com/sesh/djver
 
+_Note: right now this is only really tested with Python 3.5_
+
 
 ### Usage
 
