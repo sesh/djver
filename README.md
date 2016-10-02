@@ -7,10 +7,15 @@ STATIC_URL, and access to the admin CSS isn't otherwise restricted.
 It's probably not a great idea. Just a proof of concept.
 
 
+### Installation
+
+    pip install git+https://github.com/sesh/djver
+
+
 ### Usage
 
     Usage:
-        djver.py <url> [--static-path=<static-path>]
+        djver <url> [--static-path=<static-path>]
 
     Options:
         --static-path=<static-path>  URL path to the site's static files [default: /static/].
@@ -19,7 +24,7 @@ It's probably not a great idea. Just a proof of concept.
 ### Examples
 
     > ./djver.py commoncode.com.au
-    1.6.x
+    1.9.10-1.9
 
     > ./djver.py djangoproject.com --static-path=/s/
-    1.7.x
+    1.9.10-1.9
