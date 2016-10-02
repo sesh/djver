@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="djver",
-    version="0.1.0",
+    version="2.0.0",
     url="https://github.com/sesh/djver",
 
     author="Brenton Cleeland",
@@ -11,7 +11,6 @@ setuptools.setup(
     description="Ever wanted to know what version of Django someone else is running?",
 
     packages=setuptools.find_packages(),
-
     install_requires=['requests', 'docopt'],
 
     entry_points={
@@ -21,9 +20,9 @@ setuptools.setup(
     },
 
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        # 'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 4',
+        'Programming Language :: Python :: 3.5',
     ],
 )
