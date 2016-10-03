@@ -4,12 +4,12 @@
 djver.
 
 Usage:
-    djver.py [<url>] [--static-path=<static-path>] [--find-diffs]
+    djver.py [<url>] [--static-path=<static-path>] [--find-diffs] [--verbose]
 
 Options:
     --static-path=<static-path>  URL path to the site's static files [default: /static/].
     --find-diffs                 Attempt to find differences between the known versions of Django
-
+    --verbose                    Turn on verbose logging
 """
 
 import os
@@ -36,7 +36,7 @@ THIRD_PARTY_CSS = [
     ('django-suit', 'forms.css', 'Django Suit'),
 ]
 
-ADMIN_CSS_CHANGES = [
+ADMIN_CHANGES = [
     ('1.10.2-1.10', 'base.css', 'color: #000;'),
     ('1.9.10-1.9', 'widgets.css', 'margin-left: 7px;'),
     ('1.8.15-1.8.2', 'forms.css', 'clear: left;'),
@@ -50,7 +50,7 @@ ADMIN_CSS_CHANGES = [
 ]
 
 
-def check_str(url, search_str):
+def check_str(url, search_str, verbose=False):
     if url in RESPONSE_CACHE.keys():
         content = RESPONSE_CACHE[url]
         status_code = 200
@@ -59,27 +59,22 @@ def check_str(url, search_str):
         content = response.content.decode().replace(' ', '')
         status_code = response.status_code
 
-    print('[{}] {}'.format(status_code, url))
+    if verbose:
+        print('[{}] {}'.format(status_code, url))
+
     if status_code == 200:
         RESPONSE_CACHE[url] = content
         return search_str.replace(' ', '') in content
 
 
-def check_version(base_url, static_path):
+def check_version(base_url, static_path, verbose=False):
     if not base_url.startswith('http'):
         base_url = 'http://{}'.format(base_url)
 
-    for version, path, string in THIRD_PARTY_CSS:
+    for version, path, string in ADMIN_CHANGES:
         url = '{}{}admin/css/{}'.format(base_url, static_path, path)
-        if check_str(url, string):
-            print("Detected", version)
-
-    for version, path, string in ADMIN_CSS_CHANGES:
-        url = '{}{}admin/css/{}'.format(base_url, static_path, path)
-        if check_str(url, string):
+        if check_str(url, string, verbose):
             return version
-
-    print('Unable to detect version of {}'.format(base_url))
 
 
 def find_diffs():
@@ -174,8 +169,11 @@ def djver():
     if arguments['--find-diffs']:
         find_diffs()
     elif arguments['<url>']:
-        version = check_version(arguments['<url>'], arguments['--static-path'])
-        print(version)
+        version = check_version(arguments['<url>'], arguments['--static-path'], arguments['--verbose'])
+        if version:
+            print(version)
+        else:
+            print('Unable to detect version.')
 
 
 if __name__ == '__main__':

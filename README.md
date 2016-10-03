@@ -1,8 +1,10 @@
 Through the power of Django's contrib.admin you can use this tool to figure out
-(with a low level of reliability) what version of Django a site is running.
+(with a decent level of reliability) what version of Django a site is running.
 
 This will only work if contrib.admin is enabled, you can figure out the site's
 STATIC_URL, and access to the admin CSS isn't otherwise restricted.
+
+`djver` will detect Django versions from Django 1.4 to Django 1.10.x.
 
 It's probably not a great idea. Just a proof of concept.
 
