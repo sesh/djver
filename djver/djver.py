@@ -37,7 +37,7 @@ THIRD_PARTY_CSS = [
 ]
 
 ADMIN_CHANGES = [
-    ('1.11', 'css/base.css', 'background-position: right 7px center;'),
+    ('1.11-1.11.3', 'css/base.css', 'background-position: right 7px center;'),
     ('1.10.7-1.10', 'css/base.css', 'color: #000;'),
     ('1.9.13-1.9', 'css/widgets.css', 'margin-left: 7px;'),
     ('1.8.18-1.8.2', 'css/forms.css', 'clear: left;'),
@@ -84,7 +84,7 @@ def check_version(base_url, static_path, verbose=False):
 
 def find_diffs():
     versions = [
-        '1.11',
+        '1.11', '1.11.1', '1.11.2', '1.11.3',
 
         '1.10.7', '1.10.6', '1.10.5', '1.10.4', '1.10.3', '1.10.2', '1.10.1', '1.10',
 
@@ -126,7 +126,6 @@ def find_diffs():
         # "js/urlify.js",
 
         # admin css
-        # 'css/dashboard.css', 
         'css/widgets.css', 'css/base.css', 'css/forms.css', 'css/login.css', 'css/dashboard.css',
         # 'css/ie.css',  # removed in 1.9.x
     ]
