@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="djver",
-    version="2.0.0",
+    version="2.1.0",
     url="https://github.com/sesh/djver",
 
     author="Brenton Cleeland",
