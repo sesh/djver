@@ -27,6 +27,12 @@ try:
 except ImportError:
     from urllib.parse import urljoin
 
+try:
+    from packaging.version import parse
+except:
+    def parse(version):
+        return None
+
 
 RESPONSE_CACHE = {}
 
@@ -37,21 +43,18 @@ THIRD_PARTY_CSS = [
 ]
 
 ADMIN_CHANGES = [
-    ('1.11-1.11.3', 'css/base.css', 'background-position: right 7px center;'),
-    ('1.10.7-1.10', 'css/base.css', 'color: #000;'),
+    ('2.1.2-2.1', 'css/base.css', 'background: url(../img/icon-viewlink.svg) 0 1px no-repeat;'),
+    ('2.0.9-2.0', 'css/base.css', 'textarea:focus, select:focus, .vTextField:focus {'),
+    ('1.11.16-1.11', 'css/base.css', 'background-position: right 7px center;'),
+    ('1.10.8-1.10', 'css/base.css', 'color: #000;'),
     ('1.9.13-1.9', 'css/widgets.css', 'margin-left: 7px;'),
-    ('1.8.18-1.8.2', 'css/forms.css', 'clear: left;'),
+    ('1.8.19-1.8.2', 'css/forms.css', 'clear: left;'),
     ('1.8.1', 'css/widgets.css', '.related-widget-wrapper {'),
     ('1.8', 'css/widgets.css', 'opacity: 1;'),
     ('1.7.11-1.7', 'css/base.css', '#branding a:hover {'),
     ('1.6.11-1.6', 'css/widgets.css', 'width: 360px;'),
     ('1.5.12-1.5', 'css/widgets.css', '.url a {'),
-    ('1.4.21-1.4.18', 'css/login.css', 'text-align: center;'),
-    ('1.4.17', 'css/widgets.css', 'padding: 3px 4px;'),
-    ('1.4.16-1.4.13', 'css/login.css', '404: Not Found'),
-    ('1.4.12', 'css/widgets.css', '404: Not Found'),
-    ('1.4.11-1.4.1', 'css/widgets.css', '.inline-group .aligned .selector .selector-filter label {'),
-    ('1.4', 'css/widgets.css', 'background: #e1e1e1 url(../img/nav-bg.gif) top left repeat-x;'),
+    ('1.4.22-1.4.1', 'css/widgets.css', '.inline-group .aligned .selector .selector-filter label {'),
 ]
 
 
@@ -83,29 +86,14 @@ def check_version(base_url, static_path, verbose=False):
 
 
 def find_diffs():
-    versions = [
-        '1.11', '1.11.1', '1.11.2', '1.11.3',
+    response = requests.get('https://pypi.org/pypi/Django/json')
+    versions = [parse(v) for v in response.json()['releases'].keys()]
+    versions = sorted(versions, reverse=True)
 
-        '1.10.7', '1.10.6', '1.10.5', '1.10.4', '1.10.3', '1.10.2', '1.10.1', '1.10',
+    print(versions)
+    versions = [str(v) for v in versions if v.is_prerelease == False and v > parse("1.3.99")]
 
-        '1.9.13', '1.9.12', '1.9.11', '1.9.10', '1.9.9', '1.9.8', '1.9.7', '1.9.6', '1.9.5', '1.9.4', '1.9.3', '1.9.2',
-        '1.9.1', '1.9',
-
-        '1.8.18', '1.8.17', '1.8.16', '1.8.15', '1.8.14', '1.8.13', '1.8.12', '1.8.11', '1.8.10', '1.8.9', '1.8.8',
-        '1.8.7', '1.8.6', '1.8.5', '1.8.4', '1.8.3', '1.8.2', '1.8.1', '1.8',
-
-        '1.7.11', '1.7.10', '1.7.9', '1.7.8', '1.7.7', '1.7.6', '1.7.5', '1.7.4', '1.7.3', '1.7.2', '1.7.1', '1.7',
-
-        '1.6.11', '1.6.10', '1.6.9', '1.6.8', '1.6.7', '1.6.6', '1.6.5', '1.6.4', '1.6.3', '1.6.2', '1.6.1', '1.6',
-
-        '1.5.12', '1.5.11', '1.5.10', '1.5.9', '1.5.8', '1.5.7', '1.5.6', '1.5.5', '1.5.4', '1.5.3', '1.5.2', '1.5.1',
-        '1.5',
-
-        '1.4.21', '1.4.20', '1.4.19', '1.4.18', '1.4.17', '1.4.16', '1.4.15', '1.4.14', '1.4.13', '1.4.12', '1.4.11',
-        '1.4.10', '1.4.9', '1.4.8', '1.4.7', '1.4.6', '1.4.5', '1.4.4', '1.4.3', '1.4.2', '1.4.1', '1.4',
-
-        '1.3.7', '1.3.6', '1.3.5', '1.3.4', '1.3.3', '1.3.2', '1.3.1', '1.3',
-    ]
+    # we only care about 1.4 and above
 
     # favour files _not_ found in django-flat-theme
     files = [
